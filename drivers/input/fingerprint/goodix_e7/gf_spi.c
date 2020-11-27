@@ -243,6 +243,14 @@ static int gfspi_ioctl_clk_uninit(struct gf_dev *data) {
 }
 #endif
 
+static void irq_cleanup(struct gf_dev *gf_dev)
+{
+	gf_dev->irq_enabled = 0;
+	disable_irq(gf_dev->irq);
+	disable_irq_wake(gf_dev->irq);
+	free_irq(gf_dev->irq, gf_dev);
+}
+
 static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg) {
     struct gf_dev *gf_dev = &gf;
     struct gf_key gf_key;
@@ -635,12 +643,8 @@ static int gf_release(struct inode *inode, struct file *filp) {
     gf_dev->users--;
     if (!gf_dev->users) {
 
-
-
-        gf_disable_irq(gf_dev);
-
-        devm_free_irq(&gf_dev->spi->dev,gf_dev->irq,gf_dev);
-
+        pr_info("disble_irq. irq = %d\n", gf_dev->irq);
+        irq_cleanup(gf_dev);
         gf_cleanup(gf_dev);
 
         /*power off the sensor*/
