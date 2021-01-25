@@ -2352,13 +2352,6 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
 	return 0;
 }
 
-static inline int ext4_fname_prepare_lookup(struct inode *dir,
-					    struct dentry *dentry,
-					    struct ext4_filename *fname)
-{
-	return ext4_fname_setup_filename(dir, &dentry->d_name, 1, fname);
-}
-
 static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
 #endif /* !CONFIG_FS_ENCRYPTION */
 
